@@ -18,4 +18,7 @@ int fillOutIpHeader(struct pgrm_data *in, struct ip *out);
 //Fills out the UDP header. This should always return the correct data.
 int fillOutUdpHeader(struct pgrm_data *in, struct udphdr *out);
 
+//From vahab's code. Moving the definition to another file
+uint16_t ip_checksum(void* vdata, size_t length);
+
 #endif

@@ -26,7 +26,17 @@ struct args{
 struct pgrm_data {
 	struct args p_args;
 	int sock_fd; //The file descriptor of the raw_socket
-	struct sockaddr *dest_addr;
-	struct sockaddr *source_addr;
+	struct sockaddr_in *dest_addr;
+	struct sockaddr_in *source_addr;
 };
+
+/*  Just returns current time as double, with most possible precision...  */
+double get_time (void) {
+	struct timeval tv;
+	double d;
+	gettimeofday (&tv, NULL);
+	d = ((double) tv.tv_usec) / 1000000. + (unsigned long) tv.tv_sec;
+	return d;
+}
+
 #endif
