@@ -2,11 +2,18 @@
 #ifndef INCLUDES_H
 #define INCLUDES_H
 
+#include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/udp.h>
-#include <netinet/icmp.h>
+#include <errno.h>
+#include <sys/time.h>
 
 //This is going to store the user arguments
 struct args{
@@ -29,14 +36,5 @@ struct pgrm_data {
 	struct sockaddr_in *dest_addr;
 	struct sockaddr_in *source_addr;
 };
-
-/*  Just returns current time as double, with most possible precision...  */
-double get_time (void) {
-	struct timeval tv;
-	double d;
-	gettimeofday (&tv, NULL);
-	d = ((double) tv.tv_usec) / 1000000. + (unsigned long) tv.tv_sec;
-	return d;
-}
 
 #endif

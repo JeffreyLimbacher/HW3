@@ -2,13 +2,7 @@
 *	COMP429 Fall 2014 Project Skeleton
 */
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <string.h>
-#include <stdio.h>
 #include <pthread.h>
-#include <errno.h>
 
 #include "includes.h"
 #include "network.h"

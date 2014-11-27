@@ -2,7 +2,7 @@
 #include "network.h"
 
 //out->p_args is assumed to be valid here.
-int buildRawSocket(struct pgrm_data *out) {
+int build_raw_socket(struct pgrm_data *out) {
 
 	//source:http://sock-raw.org/papers/sock_raw
 	int sd;
@@ -18,10 +18,10 @@ int buildRawSocket(struct pgrm_data *out) {
 
 	//destination information
 	struct sockaddr_in *d_addr = 
-		(struct sockaddr_in*)calloc(1, sizeof(sockaddr_in));
+		(struct sockaddr_in*)calloc(1, sizeof(struct sockaddr_in));
 	struct args p = out->p_args;
 
-	inet_pton(AF_INET, p.host, (struct in_addr*)&d_addr.sin_addr.s_addr);
+	inet_pton(AF_INET, p.host, (struct in_addr*)&d_addr->sin_addr);
 	d_addr->sin_port = htons(p.port);
 	d_addr->sin_family = AF_INET;
 
@@ -30,27 +30,27 @@ int buildRawSocket(struct pgrm_data *out) {
 }
 
 
-int fillOutIpHeader(struct pgrm_data *in, 
+int fill_out_iphdr(struct pgrm_data *in, 
 					char protocol,
 					char ttl,
 					short int length,
 					struct ip *out){
-	out->tos = 4;
-	out->tos = 5 << 4;
-	out->tot_len = length;
-	out->ttl = ttl;
-	out->protocol = protocol;
-	out->check = 0;
-	out->saddr = 0; //Filled in when zero
-	out->daddr = in->dest_addr.in_addr.s_addr;
+	out->ip_tos = 4;
+	out->ip_tos = 5 << 4;
+	out->ip_len = length;
+	out->ip_ttl = ttl;
+	out->ip_p = protocol;
+	out->ip_sum = 0;
+	memset(&(out->ip_src), 0, sizeof (out->ip_src)); //Filled in when zero
+	out->ip_dst = in->dest_addr->sin_addr;
 	return 0;
 }
 
 
-int fillOutUdpHeader(struct pgrm_data *in,
-					 short int len,
-					 struct udphdr *out){
-	out->dest_port = in->dest_addr.sin_port;
+int fill_out_udphdr(struct pgrm_data *in,
+					short int len,
+					struct udphdr *out){
+	out->dest = in->dest_addr->sin_port;
 	out->source = 0; //flub this, I don't care
 	out->len = len;
 	return 0;
@@ -106,4 +106,13 @@ uint16_t ip_checksum(void* vdata,size_t length) {
 
     // Return the checksum in network byte order.
     return htons(~acc);
+}
+
+/*  Just returns current time as double, with most possible precision...  */
+double get_time (void) {
+	struct timeval tv;
+	double d;
+	gettimeofday (&tv, NULL);
+	d = ((double) tv.tv_usec) / 1000000. + (unsigned long) tv.tv_sec;
+	return d;
 }
