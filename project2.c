@@ -65,7 +65,9 @@ int main (int argc, char **argv) {
 	// 	return 1;
 	// }
 
+	send_thread(data);
 
+	
 
     return 0; 
 }

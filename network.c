@@ -30,7 +30,7 @@ int build_raw_sock(struct pgrm_data *out) {
 }
 
 
-int fill_out_iphdr(struct pgrm_data *in, 
+int fill_out_iphdr(const struct pgrm_data *in, 
 					char protocol,
 					char ttl,
 					short int length,
@@ -54,6 +54,41 @@ int fill_out_udphdr(struct pgrm_data *in,
 	out->source = 0; //flub this, I don't care
 	out->len = len;
 	return 0;
+}
+
+int fill_out_icmphdr(int type, int code, struct icmp_hd *out) {
+	memset(out, 0, sizeof(struct icmphdr));
+	out->type = type;
+	out->code = code;
+	out->checksum = ip_checksum((void *)out, sizeof(struct icmphdr));
+
+	return 0;
+}
+
+int pack_icmp(const struct ip *iphd, 
+			  const struct icmp_hd *icmphd, 
+			  char *buffer) {
+	int ptr_idx = 0;
+	memcpy(buffer + ptr_idx, iphd, sizeof(struct ip));
+	ptr_idx += sizeof(struct ip);
+	memcpy(buffer + ptr_idx, icmphd, sizeof(struct icmphdr));
+	ptr_idx += sizeof(struct icmp);
+	return ptr_idx;
+}
+
+int pack_udp(const struct ip *iphd, 
+			 const struct udphdr *udphd, 
+			 char *data, 
+			 size_t len, 
+			 char *buffer){
+	int ptr_idx = 0;
+	memcpy(buffer + ptr_idx, iphd, sizeof(struct ip));
+	ptr_idx += sizeof(struct ip);
+	memcpy(buffer + ptr_idx, udphd, sizeof(struct udphdr));
+	ptr_idx += sizeof(struct udphdr);
+	memcpy(buffer + ptr_idx, data, len);
+	ptr_idx += len;
+	return ptr_idx;
 }
 
 uint16_t ip_checksum(void* vdata,size_t length) {
@@ -116,3 +151,4 @@ double get_time (void) {
 	d = ((double) tv.tv_usec) / 1000000. + (unsigned long) tv.tv_sec;
 	return d;
 }
+
