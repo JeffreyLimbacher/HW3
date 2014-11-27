@@ -2,7 +2,7 @@
 #include "network.h"
 
 //out->p_args is assumed to be valid here.
-int build_raw_socket(struct pgrm_data *out) {
+int build_raw_sock(struct pgrm_data *out) {
 
 	//source:http://sock-raw.org/papers/sock_raw
 	int sd;
