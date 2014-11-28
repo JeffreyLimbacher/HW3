@@ -6,6 +6,8 @@
 
 #include "includes.h"
 #include "network.h"
+#include "receiver.h"
+#include "sender.h"
 
 void usage(){
 	fprintf(stderr, "%s %s %s %s %s %s %s %s\n",
@@ -56,18 +58,30 @@ int main (int argc, char **argv) {
 	data.p_args = params;
 
 	//Before multithreading, let's create sock_fd
-
+	int err;
+	if(err = build_raw_sock(&data)){
+		fprintf(stderr, "%s\n", strerror(err));
+		return 1;
+	}
+	fprintf(stderr, "%d\n", data.sock_fd);
 	
 	pthread_t recv_thread;
 	int recv_ret;
-	// if(recv_ret = pthread_create(&recv_thread, NULL, receiver_init, (void*)&params)) {
-	// 	fprintf(stderr, "%s: %s", params.pgrm_name, strerror(errno));
-	// 	return 1;
-	// }
+	if(recv_ret = pthread_create(&recv_thread, 
+								 NULL, 
+								 (void*) &receiver, 
+								 (void*)&data)) {
+	 	fprintf(stderr, "%s: %s", params.pgrm_name, strerror(errno));
+	 	return 1;
+	}
 
-	send_thread(data);
+	sender(data);
 
-	
+	int what;
+	int *whatp = &what;
+	pthread_join(recv_thread, (void**)&whatp);
+
+	fprintf(stderr, "join finished\n");
 
     return 0; 
 }

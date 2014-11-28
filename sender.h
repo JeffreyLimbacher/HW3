@@ -7,6 +7,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-void send_thread(struct pgrm_data data);
+void sender(struct pgrm_data data);
 
 #endif

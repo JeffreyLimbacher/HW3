@@ -3,10 +3,10 @@
 
 //out->p_args is assumed to be valid here.
 int build_raw_sock(struct pgrm_data *out) {
-
+	fprintf(stderr, "build_raw_sock\n");
 	//source:http://sock-raw.org/papers/sock_raw
 	int sd;
-	if(socket(PF_INET, SOCK_RAW, IPPROTO_RAW) < 0){
+	if(sd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW) < 0){
 		return errno;
 	}
 
@@ -26,6 +26,8 @@ int build_raw_sock(struct pgrm_data *out) {
 	d_addr->sin_family = AF_INET;
 
 	out->dest_addr = d_addr;
+	out->sock_fd = sd;
+	fprintf(stderr, "%s: %d\n", "build_raw_sock", sd);
 	return 0;
 }
 
@@ -37,7 +39,7 @@ int fill_out_iphdr(const struct pgrm_data *in,
 					struct ip *out){
 	out->ip_tos = 4;
 	out->ip_tos = 5 << 4;
-	out->ip_len = length;
+	out->ip_len = htons(length);
 	out->ip_ttl = ttl;
 	out->ip_p = protocol;
 	out->ip_sum = 0;
@@ -50,9 +52,9 @@ int fill_out_iphdr(const struct pgrm_data *in,
 int fill_out_udphdr(struct pgrm_data *in,
 					short int len,
 					struct udphdr *out){
-	out->dest = in->dest_addr->sin_port;
+	out->dest = htons(in->dest_addr->sin_port);
 	out->source = 0; //flub this, I don't care
-	out->len = len;
+	out->len = htons(len);
 	return 0;
 }
 
@@ -60,7 +62,7 @@ int fill_out_icmphdr(int type, int code, struct icmp_hd *out) {
 	memset(out, 0, sizeof(struct icmphdr));
 	out->type = type;
 	out->code = code;
-	out->checksum = ip_checksum((void *)out, sizeof(struct icmphdr));
+	out->checksum = htons(ip_checksum((void *)out, sizeof(struct icmphdr)));
 
 	return 0;
 }

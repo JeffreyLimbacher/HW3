@@ -7,9 +7,7 @@ int make_random(char *buffer, size_t size);
 int send_message(const struct pgrm_data data, const char *buffer, size_t len);
 int send_udp_train(const struct pgrm_data data);
 
-void send_thread(struct pgrm_data data) {
-	build_raw_sock(&data);
-
+void sender(struct pgrm_data data) {
 	send_icmp(data);
 
 	double time_stamp = get_time();
@@ -69,6 +67,6 @@ int send_udp_train(const struct pgrm_data data){
 	}
 
 	struct ip iphd;
-	struct udp_hd udphd;
-	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, )
+	struct udphdr udphd;
+	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, p.payload_size, &iphd);
 }

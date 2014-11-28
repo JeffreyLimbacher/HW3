@@ -3,8 +3,9 @@
 #define RECEIVER_H
 
 #include "includes.h"
+#include "network.h"
 
 //Temporarily void. Needs to return something.
-void recv_thread(void *p_data);
+void receiver(void *p_data);
 
 #endif
