@@ -63,7 +63,6 @@ int main (int argc, char **argv) {
 		fprintf(stderr, "%s\n", strerror(err));
 		return 1;
 	}
-	fprintf(stderr, "%d\n", data.sock_fd);
 	
 	pthread_t recv_thread;
 	int recv_ret;

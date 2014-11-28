@@ -32,15 +32,14 @@ int make_random(char *buffer, size_t size) {
 int send_icmp(const struct pgrm_data data){
 	int pack_size = sizeof(struct ip) + sizeof(struct icmp_hd);
 	char buffer[sizeof(struct ip) + sizeof(struct icmp_hd)];
-	struct ip iphdr;
-	int len = sizeof(struct ip) 
-			+ sizeof(struct icmp_hd) 
-			+ sizeof(data.p_args.payload_size);
-	fill_out_iphdr(&data, IPPROTO_ICMP, 255, len, &iphdr);
+	memset(buffer, 0, sizeof(buffer));
+	struct ip *iphdr = (struct ip*)buffer;
+	struct icmp_hd *icmphdr = 
+		(struct icmp_hd*)(buffer + sizeof(struct ip));
 
-	struct icmp_hd icmphd;
-	fill_out_icmphdr(ICMP_ECHO, 0, &icmphd);
-	pack_icmp(&iphdr, &icmphd, buffer);
+	fill_out_iphdr(&data, IPPROTO_ICMP, 255, pack_size, iphdr);
+
+	fill_out_icmphdr(ICMP_ECHO, 0, icmphdr);
 
 	send_message(data, buffer, pack_size);
 	return 0;
@@ -68,7 +67,7 @@ int send_udp_train(const struct pgrm_data data){
 	struct ip iphd;
 	struct udphdr udphd;
 	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, p.payload_size, &iphd);
-
+	
 
 	return 0;
 }

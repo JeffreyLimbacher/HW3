@@ -16,7 +16,7 @@ void receiver(void *p_data) {
 	struct pgrm_data data = *(struct pgrm_data *)(p_data);
 
 	double first_echo_time, second_echo_time;
-	set_timeout(2, data.sock_fd);
+	set_timeout(100, data.sock_fd);
 
 	int sfd = data.sock_fd;
 	struct sockaddr_in saddr;
@@ -28,13 +28,14 @@ void receiver(void *p_data) {
 		if(recvfrom(sfd, recv_buf, sizeof(recv_buf), 0,
 			(struct sockaddr *)&saddr, &addrlen) < 0){
 			//handle error;
+			fprintf(stderr, "%s\n", strerror(errno));
 			return;
 		}
-
 		if (get_packet_type(recv_buf) == IPPROTO_ICMP) {
 			struct icmp_hd hd;
 			get_icmp_header(&recv_buf[20], &hd);
 			if(hd.type == ICMP_ECHOREPLY){
+				fprintf(stderr, "Got echo reply\n");
 				echo_recvd++;
 				if(echo_recvd == 1){
 					first_echo_time = get_time();
@@ -49,6 +50,7 @@ void receiver(void *p_data) {
 				fprintf(stderr, "Got port unreachable\n");
 			}
 		}
+		memset(recv_buf, 0, MAX_IP_SIZE);
 	}
 
 
