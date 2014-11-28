@@ -12,9 +12,11 @@
 #include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/ip_icmp.h>
+#include <netinet/in_systm.h>
 #include <netinet/udp.h>
 #include <errno.h>
 #include <sys/time.h>
+
 
 //This is going to store the user arguments
 struct args{

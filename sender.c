@@ -31,11 +31,11 @@ int make_random(char *buffer, size_t size) {
 }
 
 int send_icmp(const struct pgrm_data data){
-	int pack_size = sizeof(struct ip) + sizeof(struct icmphdr);
-	char buffer[sizeof(struct ip) + sizeof(struct icmphdr)];
+	int pack_size = sizeof(struct ip) + sizeof(struct icmp_hd);
+	char buffer[sizeof(struct ip) + sizeof(struct icmp_hd)];
 	struct ip iphdr;
 	int len = sizeof(struct ip) 
-			+ sizeof(struct icmphdr) 
+			+ sizeof(struct icmp_hd) 
 			+ sizeof(data.p_args.payload_size);
 	fill_out_iphdr(&data, IPPROTO_ICMP, 255, len, &iphdr);
 

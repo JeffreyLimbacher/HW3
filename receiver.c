@@ -1,6 +1,9 @@
 
 #include "receiver.h"
 
+#define ICMP_DEST_UNREACH 3
+#define ICMP_PORT_UNREACH 3
+
 void set_timeout(long int time_out, int sockfd);
 int get_packet_type(char *buffer);
 

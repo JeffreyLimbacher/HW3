@@ -6,7 +6,7 @@ int build_raw_sock(struct pgrm_data *out) {
 	fprintf(stderr, "build_raw_sock\n");
 	//source:http://sock-raw.org/papers/sock_raw
 	int sd;
-	if(sd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW) < 0){
+	if((sd = socket(AF_INET, SOCK_RAW, IPPROTO_RAW)) < 0){
 		return errno;
 	}
 
@@ -52,17 +52,23 @@ int fill_out_iphdr(const struct pgrm_data *in,
 int fill_out_udphdr(struct pgrm_data *in,
 					short int len,
 					struct udphdr *out){
+	#ifdef HAVE_DUMB_UDPHDR
 	out->dest = htons(in->dest_addr->sin_port);
 	out->source = 0; //flub this, I don't care
 	out->len = htons(len);
+	#else
+	out->uh_dport = htons(in->dest_addr->sin_port);
+	out->uh_sport = htons(in->dest_addr->sin_port);
+	out->uh_ulen = htons(len);
+	#endif
 	return 0;
 }
 
 int fill_out_icmphdr(int type, int code, struct icmp_hd *out) {
-	memset(out, 0, sizeof(struct icmphdr));
+	memset(out, 0, sizeof(struct icmp_hd));
 	out->type = type;
 	out->code = code;
-	out->checksum = htons(ip_checksum((void *)out, sizeof(struct icmphdr)));
+	out->checksum = htons(ip_checksum((void *)out, sizeof(struct icmp_hd)));
 
 	return 0;
 }
@@ -73,7 +79,7 @@ int pack_icmp(const struct ip *iphd,
 	int ptr_idx = 0;
 	memcpy(buffer + ptr_idx, iphd, sizeof(struct ip));
 	ptr_idx += sizeof(struct ip);
-	memcpy(buffer + ptr_idx, icmphd, sizeof(struct icmphdr));
+	memcpy(buffer + ptr_idx, icmphd, sizeof(struct icmp_hd));
 	ptr_idx += sizeof(struct icmp);
 	return ptr_idx;
 }
