@@ -34,6 +34,7 @@ void receiver(void *p_data) {
 		if (get_packet_type(recv_buf) == IPPROTO_ICMP) {
 			struct icmp_hd hd;
 			get_icmp_header(&recv_buf[20], &hd);
+			fprintf(stderr, "%d\n", hd.type);
 			if(hd.type == ICMP_ECHOREPLY){
 				fprintf(stderr, "Got echo reply\n");
 				echo_recvd++;
@@ -52,8 +53,6 @@ void receiver(void *p_data) {
 		}
 		memset(recv_buf, 0, MAX_IP_SIZE);
 	}
-
-
 }
 
 void set_timeout(long int time_out, int sockfd) {

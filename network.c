@@ -47,16 +47,16 @@ int fill_out_iphdr(const struct pgrm_data *in,
 }
 
 
-int fill_out_udphdr(struct pgrm_data *in,
+int fill_out_udphdr(const struct pgrm_data *in,
 					short int len,
 					struct udphdr *out){
 	#ifdef HAVE_DUMB_UDPHDR
-	out->dest = htons(in->dest_addr->sin_port);
+	out->dest = in->dest_addr->sin_port;
 	out->source = 0; //flub this, I don't care
 	out->len = htons(len);
 	#else
-	out->uh_dport = htons(in->dest_addr->sin_port);
-	out->uh_sport = htons(in->dest_addr->sin_port);
+	out->uh_dport = in->dest_addr->sin_port;
+	out->uh_sport = in->dest_addr->sin_port;
 	out->uh_ulen = htons(len);
 	#endif
 	return 0;

@@ -32,7 +32,7 @@ int fill_out_iphdr(const struct pgrm_data *in,
 					struct ip *out);
 
 //Fills out the UDP header. This should always return the correct data.
-int fill_out_udphdr(struct pgrm_data *in,
+int fill_out_udphdr(const struct pgrm_data *in,
 					short int len,
 					struct udphdr *out);
 

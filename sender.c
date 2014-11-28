@@ -64,10 +64,20 @@ int send_udp_train(const struct pgrm_data data){
 		}
 	}
 
-	struct ip iphd;
-	struct udphdr udphd;
-	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, p.payload_size, &iphd);
-	
+	short int tot_len = p.payload_size + sizeof(struct ip) + sizeof(struct udphdr);
+	char *buffer = (char *)calloc(tot_len, 1);
+	struct ip *iphd = (struct ip *)buffer;
+	struct udphdr *udphd = (struct udphdr *)(buffer + sizeof(struct ip));
+	char *udp_payload = (char *)udphd + sizeof(struct udphdr);
+	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, tot_len, iphd);
+	int udp_size = p.payload_size + sizeof(struct udphdr);
+	fill_out_udphdr(&data, udp_size, udphd);
+	int i;
+	for(i = 0; i < p.number_packets; i++){
+		memcpy(udp_payload, udp_buffer + i*p.payload_size, p.payload_size);
+		udphd->check = ip_checksum(udphd, udp_size);
+		send_message(data, buffer, tot_len);
+	}
 
 	return 0;
 }
