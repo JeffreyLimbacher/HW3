@@ -20,7 +20,7 @@ void receiver(void *p_data) {
 
 	int sfd = data.sock_fd;
 	struct sockaddr_in saddr;
-	int addrlen = sizeof(saddr);
+	socklen_t addrlen = sizeof(saddr);
 	char recv_buf[MAX_IP_SIZE];
 	int echo_recvd = 0;
 

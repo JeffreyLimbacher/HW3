@@ -1,11 +1,10 @@
 
 #include "sender.h"
 
-#include "network.h"
-
 int make_random(char *buffer, size_t size);
 int send_message(const struct pgrm_data data, const char *buffer, size_t len);
 int send_udp_train(const struct pgrm_data data);
+int send_icmp(const struct pgrm_data data);
 
 void sender(struct pgrm_data data) {
 	send_icmp(data);
@@ -69,4 +68,7 @@ int send_udp_train(const struct pgrm_data data){
 	struct ip iphd;
 	struct udphdr udphd;
 	fill_out_iphdr(&data, IPPROTO_UDP, data.p_args.ttl, p.payload_size, &iphd);
+
+
+	return 0;
 }

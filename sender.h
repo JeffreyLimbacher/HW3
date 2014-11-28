@@ -3,6 +3,7 @@
 #define SENDER_H
 
 #include "includes.h"
+#include "network.h"
 
 #include <sys/stat.h>
 #include <fcntl.h>

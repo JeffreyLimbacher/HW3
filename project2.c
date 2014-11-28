@@ -22,7 +22,7 @@ void usage(){
 }
 
 int processArgs(int argc, char **argv, struct args *params) {
-	memset(params, 0, sizeof(params));
+	memset(params, 0, sizeof(struct args));
 
 	params->pgrm_name = argv[0];
 	params->host = argv[1];
@@ -59,7 +59,7 @@ int main (int argc, char **argv) {
 
 	//Before multithreading, let's create sock_fd
 	int err;
-	if(err = build_raw_sock(&data)){
+	if((err = build_raw_sock(&data))){
 		fprintf(stderr, "%s\n", strerror(err));
 		return 1;
 	}
@@ -67,10 +67,10 @@ int main (int argc, char **argv) {
 	
 	pthread_t recv_thread;
 	int recv_ret;
-	if(recv_ret = pthread_create(&recv_thread, 
+	if((recv_ret = pthread_create(&recv_thread, 
 								 NULL, 
 								 (void*) &receiver, 
-								 (void*)&data)) {
+								 (void*) &data))) {
 	 	fprintf(stderr, "%s: %s", params.pgrm_name, strerror(errno));
 	 	return 1;
 	}
