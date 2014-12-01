@@ -6,6 +6,8 @@ int send_message(const struct pgrm_data data, const char *buffer, size_t len);
 int send_udp_train(const struct pgrm_data data);
 int send_icmp(const struct pgrm_data data);
 
+
+// main part of the sender file
 void sender(struct pgrm_data data) {
 	send_icmp(data);
 
@@ -13,6 +15,7 @@ void sender(struct pgrm_data data) {
 
 	send_udp_train(data);
 }
+
 
 int make_random(char *buffer, size_t size) {
 
@@ -29,6 +32,8 @@ int make_random(char *buffer, size_t size) {
 	return 0;
 }
 
+
+// send icmp through
 int send_icmp(const struct pgrm_data data){
 	int pack_size = sizeof(struct ip) + sizeof(struct icmp_hd);
 	char buffer[sizeof(struct ip) + sizeof(struct icmp_hd)];
@@ -45,6 +50,7 @@ int send_icmp(const struct pgrm_data data){
 	return 0;
 }
 
+// send the message
 int send_message(const struct pgrm_data data, const char *buffer, size_t len){
 	int sfd = data.sock_fd;
 	socklen_t sock_size = sizeof(struct sockaddr_in);
@@ -55,6 +61,8 @@ int send_message(const struct pgrm_data data, const char *buffer, size_t len){
 	return 0;
 }
 
+
+// begin the udp train
 int send_udp_train(const struct pgrm_data data){
 	struct args p = data.p_args;
 	char *udp_buffer = (char *)calloc(p.number_packets, p.payload_size);

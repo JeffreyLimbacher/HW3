@@ -5,17 +5,22 @@
 int build_raw_sock(struct pgrm_data *out) {
 	//source:http://sock-raw.org/papers/sock_raw
 	int sd;
+
+	// create a raw socket and check for failure
 	if((sd = socket(AF_INET, SOCK_RAW, IPPROTO_ICMP)) < 0){
 		return errno;
 	}
 
 	int one = 1;
+	
+	// set socket options pointing to socket sd and check for failure
 	if(setsockopt(sd, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one)) < 0) {
 		return errno;
 	}
 
 
-	//destination information
+	// destination information
+	// 
 	struct sockaddr_in *d_addr = 
 		(struct sockaddr_in*)calloc(1, sizeof(struct sockaddr_in));
 	struct args p = out->p_args;
@@ -29,7 +34,7 @@ int build_raw_sock(struct pgrm_data *out) {
 	return 0;
 }
 
-
+// method to enter information into the header
 int fill_out_iphdr(const struct pgrm_data *in, 
 					char protocol,
 					char ttl,
@@ -47,6 +52,7 @@ int fill_out_iphdr(const struct pgrm_data *in,
 }
 
 
+// method to enter information into the udp header
 int fill_out_udphdr(const struct pgrm_data *in,
 					short int len,
 					struct udphdr *out){
@@ -62,6 +68,8 @@ int fill_out_udphdr(const struct pgrm_data *in,
 	return 0;
 }
 
+
+// method to enter information into the icmp header
 int fill_out_icmphdr(int type, int code, struct icmp_hd *out) {
 	memset(out, 0, sizeof(struct icmp_hd));
 	out->type = type;
@@ -71,6 +79,8 @@ int fill_out_icmphdr(int type, int code, struct icmp_hd *out) {
 	return 0;
 }
 
+
+// enter information into the icmp
 int pack_icmp(const struct ip *iphd, 
 			  const struct icmp_hd *icmphd, 
 			  char *buffer) {
@@ -82,6 +92,8 @@ int pack_icmp(const struct ip *iphd,
 	return ptr_idx;
 }
 
+
+//  enter information into the udp
 int pack_udp(const struct ip *iphd, 
 			 const struct udphdr *udphd, 
 			 char *data, 
@@ -96,6 +108,8 @@ int pack_udp(const struct ip *iphd,
 	ptr_idx += len;
 	return ptr_idx;
 }
+
+
 
 uint16_t ip_checksum(void* vdata,size_t length) {
     // Cast the data pointer to one that can be indexed.
