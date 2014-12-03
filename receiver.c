@@ -53,6 +53,10 @@ void receiver(void *p_data) {
 		}
 		memset(recv_buf, 0, MAX_IP_SIZE);
 	}
+
+	struct rcvr_return_data *eg = malloc(sizeof(struct rcvr_return_data));
+	eg->x = 777; //calculate time between first and second icmp...i think...
+	pthread_exit(eg);
 }
 
 void set_timeout(long int time_out, int sockfd) {

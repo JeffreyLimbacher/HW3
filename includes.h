@@ -41,4 +41,9 @@ struct pgrm_data {
 	struct sockaddr_in *source_addr;
 };
 
+struct rcvr_return_data {
+	int x;
+	//other stuff?
+};
+
 #endif

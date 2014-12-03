@@ -5,6 +5,7 @@ int make_random(char *buffer, size_t size);
 int send_message(const struct pgrm_data data, const char *buffer, size_t len);
 int send_udp_train(const struct pgrm_data data);
 int send_icmp(const struct pgrm_data data);
+int send_icmp_tail(const struct prgm_data data);
 
 
 // main part of the sender file
@@ -14,6 +15,13 @@ void sender(struct pgrm_data data) {
 	double time_stamp = get_time();
 
 	send_udp_train(data);
+
+	int i;
+	for(i = 0; i < data.p_args.num_icmp_packets; i++)
+	{
+		send_icmp(data);
+		sleep(data.p_args.packet_departure_time);
+	}
 }
 
 

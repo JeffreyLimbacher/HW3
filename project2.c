@@ -76,10 +76,10 @@ int main (int argc, char **argv) {
 
 	sender(data);
 
-	int what;
-	int *whatp = &what;
-	pthread_join(recv_thread, (void**)&whatp);
+	struct rcvr_return_data *rcvr_data;
+	pthread_join(recv_thread, (void**)&rcvr_data);
 
+	printf("\n receiver return data: %d\n", rcvr_data->x);
 	fprintf(stderr, "join finished\n");
 
     return 0; 
