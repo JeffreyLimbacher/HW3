@@ -36,10 +36,23 @@ int fill_out_udphdr(const struct pgrm_data *in,
 					short int len,
 					struct udphdr *out);
 
+/**
+ * Fills outs an ICMP header at the memory location out. The type and code are
+ * and the checksum is calculated. 
+ */
 int fill_out_icmphdr(int type, int code, struct icmp_hd *out);
 
+
+/**
+ * Covnenience function that puts the ip header and icmphd into buffer. It's
+ * up to the caller to ensure that both the ip header and the icmp header can
+ * fit into buffer. Dead code.
+ */
 int pack_icmp(const struct ip *iphd, const struct icmp_hd *icmphd, char *buffer);
 
+/**
+ * Convenience function that puts the idphdr and ip header into buffer. Currently dead code.
+ */
 int pack_udp(const struct ip *iphd, 
 			 const struct udphdr *udphd, 
 			 char *data, 
