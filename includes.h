@@ -42,7 +42,7 @@ struct pgrm_data {
 };
 
 struct rcvr_return_data {
-	int x;
+	int status;
 	//other stuff?
 };
 

@@ -40,10 +40,10 @@ int processArgs(int argc, char **argv, struct args *params) {
 
 /**
  * This program will work by first 
- * 1. processing the args,
+ * 1. processing the command line args,
  * 2. creating the socket information and storing in the pgrm_data struct
  * 3. threading into the sender and receiver
- * 4. joining at the end to do the final calculations before exiting.
+ * 4. joining the threads and exiting.
  */
 
 
@@ -78,9 +78,8 @@ int main (int argc, char **argv) {
 
 	struct rcvr_return_data *rcvr_data;
 	pthread_join(recv_thread, (void**)&rcvr_data);
+	//fprintf(stderr, "join finished\n");
 
-	printf("\n receiver return data: %d\n", rcvr_data->x);
-	fprintf(stderr, "join finished\n");
-
+	//puts("\n~~~~~END OF PROGRAM~~~~~\n");
     return 0; 
 }

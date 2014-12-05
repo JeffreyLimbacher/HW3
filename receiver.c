@@ -1,5 +1,6 @@
 
 #include "receiver.h"
+#include <pthread.h>
 
 #define ICMP_DEST_UNREACH 3
 #define ICMP_PORT_UNREACH 3
@@ -44,7 +45,7 @@ void receiver(void *p_data) {
 			struct icmp_hd hd;
 			get_icmp_header(&recv_buf[20], &hd);
 			if(hd.type == ICMP_ECHOREPLY){
-				fprintf(stderr, "Got echo reply #%d\n", echo_recvd);
+				//fprintf(stderr, "Received echo reply #%d\n", echo_recvd);
 				echo_recvd++;
 				//See what echo message # is this. 
 				if(echo_recvd == 1){
@@ -59,20 +60,23 @@ void receiver(void *p_data) {
 			else if(hd.type == ICMP_DEST_UNREACH &&
 					hd.code == ICMP_PORT_UNREACH) {
 				//Just for debugging...
-				fprintf(stderr, "Got port unreachable\n");
+				//fprintf(stderr, "Got port unreachable\n");
 			}
 		}
 		//Just for safety for the next iteration
 		memset(recv_buf, 0, MAX_IP_SIZE);
 	}
 
+	//calculate and print the time difference between the tail and head icmp pakets
 	double time_difference = second_echo_time - first_echo_time;
-	printf("Receiver Output: %c %f\n", data.p_args.entropy, time_difference);
+	printf("\nCalculation: %c %f\n\n", data.p_args.entropy, time_difference);
 
 
-	struct rcvr_return_data *eg = malloc(sizeof(struct rcvr_return_data));
-	eg->x = 0; //calculate time between first and second icmp...i think...
-	pthread_exit(eg);
+	/*we thought the receiver might have to return data, but it can actually 
+	just print from its own thread. so this return struct isn't needed...*/
+	struct rcvr_return_data *return_data = malloc(sizeof(struct rcvr_return_data));
+	return_data->status = 0; //return of 0 means ok
+	pthread_exit(return_data);
 }
 // Sets the timeout to time_out on the socket. If we don't receive a message in
 // time_out time, then recvfrom will error out.
