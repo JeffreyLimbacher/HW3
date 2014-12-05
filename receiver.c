@@ -43,7 +43,6 @@ void receiver(void *p_data) {
 		if (get_packet_type(recv_buf) == IPPROTO_ICMP) {
 			struct icmp_hd hd;
 			get_icmp_header(&recv_buf[20], &hd);
-			fprintf(stderr, "%d\n", hd.type);
 			if(hd.type == ICMP_ECHOREPLY){
 				fprintf(stderr, "Got echo reply #%d\n", echo_recvd);
 				echo_recvd++;
@@ -67,8 +66,12 @@ void receiver(void *p_data) {
 		memset(recv_buf, 0, MAX_IP_SIZE);
 	}
 
+	double time_difference = second_echo_time - first_echo_time;
+	printf("Receiver Output: %c %f\n", data.p_args.entropy, time_difference);
+
+
 	struct rcvr_return_data *eg = malloc(sizeof(struct rcvr_return_data));
-	eg->x = 777; //calculate time between first and second icmp...i think...
+	eg->x = 0; //calculate time between first and second icmp...i think...
 	pthread_exit(eg);
 }
 // Sets the timeout to time_out on the socket. If we don't receive a message in

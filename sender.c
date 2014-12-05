@@ -22,7 +22,7 @@ void sender(struct pgrm_data data) {
 	for(i = 0; i < data.p_args.num_icmp_packets; i++)
 	{
 		send_icmp(data);
-		sleep(data.p_args.packet_departure_time);
+		sleep(data.p_args.packet_departure_time / 1000); //milliseconds to seconds (so divide by 1000)
 	}
 }
 
