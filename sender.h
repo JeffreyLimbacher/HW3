@@ -8,6 +8,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+/**
+ * @param data
+ **/
 void sender(struct pgrm_data data);
 
 #endif

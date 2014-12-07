@@ -163,7 +163,7 @@ uint16_t ip_checksum(void* vdata,size_t length) {
     return htons(~acc);
 }
 
-/*  Just returns current time as double, with most possible precision...  */
+/*  returns current time as double, with most possible precision  */
 double get_time (void) {
 	struct timeval tv;
 	double d;

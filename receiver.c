@@ -20,14 +20,16 @@ void receiver(void *p_data)
 {
 	struct pgrm_data data = *(struct pgrm_data *)(p_data);
 	double first_echo_time = 0, second_echo_time = 0;
-	
-	set_timeout(100, data.sock_fd); //Set the timeout on the socket to something reasonable
+
+	// set the timeout of the socket to something reasonable
+	set_timeout(100, data.sock_fd); 
 
 	int sfd = data.sock_fd;
 	struct sockaddr_in saddr;
 	socklen_t addrlen = sizeof(saddr);
-	
-	char recv_buf[MAX_IP_SIZE]; //Stores the message we receive from the socket
+
+	//Stores the message we receive from the socket
+	char recv_buf[MAX_IP_SIZE]; 
 	int echo_recvd = 0;
 
 	for( ; ; ) 
@@ -107,6 +109,7 @@ int get_packet_type(char *buffer)
 //needs to be byte swapped.
 void get_icmp_header(char *buffer, struct icmp_hd *out) 
 {
-	memcpy(out, buffer, 8); //ICMP packets have a fixed 8 byte header
+	//ICMP packets have a fixed 8 byte header
+	memcpy(out, buffer, 8); 
 	out->checksum = ntohs(out->checksum);
 }
