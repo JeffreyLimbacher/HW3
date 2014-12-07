@@ -72,7 +72,7 @@ A sample run:
 \end{itemize}
 
 \section{Challenges}
-\ \ \ \ A big problem that we faced during this project was the issue of cross compatbility between operating systems. Varatep Buranintu was developing on OS X, John-Luke Laue on Linux 14.04, and Jeffrey Limbacher on Windows. This was due to a lack of consideration for compatibility on Linux and we encountered some issues with the \textit{udphdr} struct having more than one definition and there was ambiguity when switching the source files to a different operating system. 
+\ \ \ \ A big problem that we faced during this project was the issue of cross compatbility between operating systems. Varatep Buranintu was developing on OS X, while Jeffrey Limbacher and John-Luke Laue developed on Linux. This was due to a lack of consideration for compatibility on Linux and we encountered some issues with the \textit{udphdr} struct having more than one definition and there was ambiguity when switching the source files to a different operating system. 
 
 \section{Correct Implementations}
 \ \ \ \ 
@@ -81,19 +81,19 @@ A sample run:
 \ \ \ \ 
 
 \section{Design Decisions}
-\ \ \ \ The greatest design decision we had to conclude on was how to split the work up. For a project like this, modularity is key in developing a reusable codebase with independent segments in itself allowing multiple developers to work simultaneously on similar parts of the program without impeding each other's work. We agreed that the application would use multithreading in order to provide a seamless user experience and performance limiting possible gridlocks. The first thing we did was creating a header file called \textit{"includes.h"} that would import all of the required C standard libraries as well as act as the interface for our common program data. Such program data includes the Sender and Receiver functions \textit{sendto} and \textit{recvfrom} on the same socket. Another common program data used is the idea that both the Sender and Receiver need to be aware of the entropy type.  Our user arguments struct was also stored in the \textit{"includes.h"} file so that we would not have to re-declare or re-define it for every file in which it is used.
+\ \ \ \ The greatest design decision we had to conclude on was how to split the work up. For a project like this, modularity is key in developing a reusable codebase with independent segments in itself allowing multiple developers to work simultaneously on similar parts of the program without impeding each other's work. We agreed that the application would use multithreading in order to provide a seamless user experience and performance limiting possible gridlocks. The first thing we did was creating a header file called \textit{"includes.h"} that would import all of the required C standard libraries as well as act as the interface for our common program data. Such program data includes a shared socket to be used by both the Sender and Receiver. Another common program data used is the idea that both the Sender and Receiver need to be aware of the entropy type.  Our user arguments struct was also stored in the \textit{"includes.h"} file so that we would not have to re-declare or re-define it for every file in which it is used.
 \begin{center}
 \includegraphics[scale=0.4]{images/includes-header.png}
 \end{center}
 
 \subsection{Sender}
-\ \ \ \ We designated the Sender to stay on the main thread as this is the core of our project that requires the most attention from the operating system. The sender is broken up into two categories: send functions \textit{("sender.c")} and fill-out functions \textit{("network.c")}. \\
+\ \ \ \ We designated the Sender to stay on the main thread as this is the core of our project that requires the most attention from the operating system. The sender is broken up into two categories: send functions \textit{("sender.c")} and fill-out functions \textit{("network.c")}. The fill-out (or pack) functions simply take in a data structure (for example a \textit{struct ip} or \textit{struct udphdr}) and build it up. The send functions are responsible for taking the built-up structures and sending them.
 \begin{center}
 \includegraphics[scale=0.3]{images/sender-design.png}
 \end{center}
 
 \subsection{Receiver}
-\ \ \ \ John-Luke Laue intended the Receiver to have the same design as the Sender, although he quickly realized that this was unnecessary as a result of unpacking not requiring a multitude of functions in order to work properly.
+\ \ \ \ John-Luke Laue intended the Receiver to have the same design as the Sender, although he quickly realized that this was unnecessary as a result of unpacking not requiring a multitude of functions in order to work properly. Therefore, all Receiver functionality is in one file: \textit{("receiver.c")}. The main function,  \textit{receiver}, is the core of the Receiver which basically loops until it receives two icmp packets. There are only three small helper functions to help the receiver function (for example \textit{get\_icmp\_header} extracts the icmp packet from the ip datagram).
 \begin{center}
 \includegraphics[scale=0.3]{images/receiver-design.png}
 \end{center}
