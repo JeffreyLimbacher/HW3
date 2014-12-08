@@ -72,10 +72,13 @@ A sample run:
 \end{itemize}
 
 \section{Challenges}
-\ \ \ \ A big problem that we faced during this project was the issue of cross compatbility between operating systems. Varatep Buranintu was developing on OS X, while Jeffrey Limbacher and John-Luke Laue developed on Linux. This was due to a lack of consideration for compatibility on Linux and we encountered some issues with the \textit{udphdr} struct having more than one definition and there was ambiguity when switching the source files to a different operating system. 
+\ \ \ \ A big problem that we faced during this project was the issue of cross compatbility between operating systems. Varatep Buranintu was developing on OS X, while Jeffrey Limbacher and John-Luke Laue developed on Linux. This was due to a lack of consideration for compatibility on Linux and we encountered some issues with the \textit{udphdr} struct having more than one definition and there was ambiguity when switching the source files to a different operating system. \newline
+\ \ \ \ Another challenge was debugging the program. At first, the socket created simply did not allow socket operations to be performed on this. Varatep was able to fix it by simply adding headers to fix errors for the OS X environment. Interestingly, this fixed the issue on Ubuntu, which still remains a mystery of why exactly that error was occurring. There was also difficultly in debugging the application so it sent the correct data. GDB was used to try and debug it at first, but it made it hard to parse what was in the packet. Wireshark was eventually employed which helped immensely with debugging why we were not receiving any responses. \newline
+\ \ \ \ Sometimes the chosen client would not send back ICMP messages. Jeffrey spent a lot of time trying to fix what he was an issue with the echo response packet, but eventually was discovered to be a noncompliant client.
 
 \section{Correct Implementations}
-\ \ \ \ 
+\ \ \ \ I believe putting the sender and receiver in two different threads was a good implementation. This allows the receiver and sender to send messages and receive messages at the same time. It also made it easier to develop and read the code. The receiver code did not have to worry about the sender at all. It simply knew what to receive. The same concept also applies to the sender. This allowed easier parallel development.\newline
+\ \ \ \ We wrapped all the network functions in helper functions that made it easy for the sender and receiver to reuse pieces of code. One of the functions was creating the socket. The socket was then shared with the rest of the program, so the sender and receiver did not have to worry about creating the socket. In addition, certain features made it easier for the sender to easily create udp, ip, and icmp messages.
 
 \section{Problematic Implementations}
 \ \ \ \ 
@@ -99,6 +102,7 @@ A sample run:
 \end{center}
 
 \section{Project Hindsight}
+\ \ \ \ Splitting the sender, receiver, and network code made it easier to do parallel development, but it resulted in too many files. In addition, it was difficult to know what functions to make available to the sender and receiver threads. The interfaces for them ended up being a little clunky and did not do a good enough job of adding ease to creating messages, but it saved on lines of code. Instead, I would have created a function that simply took in the udp and icmp parameters and sent the messages, rather than populating the message and returning it. This would have made the sender class easier to code, and further abstracted away from the networking. 
 \ \ \ \ 
 
 \section{Allocation of Work}
